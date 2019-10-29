@@ -1,8 +1,8 @@
 import Vue from "vue";
 
-import ExampleComponent from "./components/ExampleComponent.vue";
+import ScheduleEvents from "./components/ScheduleEvents.vue";
 
 new Vue({
   el: "#app",
-  components: { "example-component": ExampleComponent }
+  components: { "schedule-events": ScheduleEvents }
 });
