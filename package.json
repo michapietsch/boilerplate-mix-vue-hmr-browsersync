@@ -1,7 +1,7 @@
 {
   "name": "mix-vue-hmr-browsersync",
   "version": "1.0.0",
-  "description": "Browsersync, Vue and Hot Module Reloading Example, Using Webpack via Laravel Mix",
+  "description": "Browsersync, Vue and Hot Module Replacement Example, Using Webpack via Laravel Mix",
   "scripts": {
     "dev": "cross-env NODE_ENV=development node_modules/webpack-dev-server/bin/webpack-dev-server.js --inline --hot --config=node_modules/laravel-mix/setup/webpack.config.js"
   },
