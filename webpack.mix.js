@@ -10,3 +10,7 @@ mix.browserSync({
 });
 
 mix.js("resources/js/app.js", "public/js/app.js");
+
+mix.postCss("resources/css/tailwind.css", "public/css", [
+  require("tailwindcss")
+]);
