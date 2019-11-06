@@ -34,7 +34,7 @@
           @click="toggle(day)"
         >
           {{ index + 1 }}
-          <!-- Example dots for existing events -->
+          <!-- Dots for existing events -->
           <div v-if="hasExistingEvents(day)" class="flex justify-center">
             <span class="block w-2 h-2 rounded-full bg-blue-500"></span>
           </div>
@@ -56,12 +56,14 @@
 
 <script type="text/babel">
 import {
-  endOfMonth,
   eachDayOfInterval,
-  isSameDay,
   isWithinInterval,
+  startOfDay,
+  endOfMonth,
+  isSameDay,
   subMonths,
   addMonths,
+  endOfDay,
   format,
   getDay
 } from "date-fns";
@@ -80,23 +82,27 @@ export default {
       return endOfMonth(this.firstDay);
     },
 
-    offsetWeekdays: function() {
-      return getDay(this.firstDay);
-    },
-
     days: function() {
       return eachDayOfInterval({ start: this.firstDay, end: this.lastDay });
     },
 
+    offsetWeekdays: function() {
+      return getDay(this.firstDay);
+    },
+
+    currentMonthInterval() {
+      return { start: startOfDay(this.firstDay), end: endOfDay(this.lastDay) };
+    },
+
     newDatesCurrentMonthOnly: function() {
       return this.newDates.filter(date =>
-        isWithinInterval(date, { start: this.firstDay, end: this.lastDay })
+        isWithinInterval(date, this.currentMonthInterval)
       );
     },
 
     existingEventsCurrentMonthOnly: function() {
       return this.existingEvents.filter(date =>
-        isWithinInterval(date, { start: this.firstDay, end: this.lastDay })
+        isWithinInterval(date, this.currentMonthInterval)
       );
     },
 
