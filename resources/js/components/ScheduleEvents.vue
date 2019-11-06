@@ -3,7 +3,7 @@
     <div class="flex justify-between text-sm mt-6 mb-4">
       <button
         type="button"
-        class="text-gray-600 underline"
+        class="text-gray-700 underline"
         @click="goToPreviousMonth"
       >{{ previousMonthPresentation }}</button>
 
@@ -11,7 +11,7 @@
 
       <button
         type="button"
-        class="text-gray-600 underline"
+        class="text-gray-700 underline"
         @click="goToNextMonth"
       >{{ nextMonthPresentation }}</button>
     </div>
@@ -20,7 +20,7 @@
       <div
         v-for="weekday in ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa']"
         :key="weekday"
-        class="text-center mb-2 text-gray-600 text-sm"
+        class="text-center mb-2 text-gray-700 text-sm"
       >{{ weekday }}</div>
 
       <!-- Offset -->
