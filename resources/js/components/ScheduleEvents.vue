@@ -1,46 +1,57 @@
 <template>
   <div>
     <div class="flex justify-between text-sm mt-6 mb-4">
+      <h3 class="order-2 text-center font-bold">{{ currentMonthPresentation }}</h3>
+
       <button
         type="button"
-        class="text-gray-700 underline"
+        class="order-1 text-gray-700 underline"
         @click="goToPreviousMonth"
+        aria-label="Go to previous month"
       >{{ previousMonthPresentation }}</button>
 
-      <h3 class="text-center font-bold">{{ currentMonthPresentation }}</h3>
-
       <button
         type="button"
-        class="text-gray-700 underline"
+        class="order-3 text-gray-700 underline"
         @click="goToNextMonth"
+        aria-label="Go to next month"
       >{{ nextMonthPresentation }}</button>
     </div>
 
-    <div class="calendar__days flex flex-wrap items-stretch -mr-1 -ml-1">
+    <form class="calendar__days flex flex-wrap items-stretch -mr-1 -ml-1">
       <div
         v-for="weekday in ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa']"
         :key="weekday"
         class="text-center mb-2 text-gray-700 text-sm"
+        aria-hidden="true"
       >{{ weekday }}</div>
 
       <!-- Offset -->
-      <div v-for="day in offsetWeekdays" :key="day+'-offset'"></div>
+      <div v-for="day in offsetWeekdays" :key="day+'-offset'" aria-hidden="true"></div>
 
       <!-- The actual days on the month -->
-      <div v-for="(day, index) in days" :key="index" class="p-1 h-12">
-        <div
-          class="bg-gray-300 text-center h-full cursor-pointer"
-          :class="isSelected(day) ? 'bg-blue-500 text-white' : ''"
-          @click="toggle(day)"
-        >
-          {{ index + 1 }}
-          <!-- Dots for existing events -->
-          <div v-if="hasExistingEvents(day)" class="flex justify-center">
-            <span class="block w-2 h-2 rounded-full bg-blue-500"></span>
-          </div>
+      <div v-for="(day, index) in days" :key="index" class="calendar__day p-1 h-12">
+        <div class="h-full relative">
+          <input
+            type="checkbox"
+            :id="day"
+            @click="toggle(day)"
+            :aria-label="screenReaderDatePresentation(day)"
+          />
+          <label
+            :for="day"
+            class="block absolute top-0 right-0 bottom-0 left-0 bg-gray-300 text-center h-full cursor-pointer"
+            :class="isSelected(day) ? 'bg-blue-500 text-white' : ''"
+          >
+            <span aria-hidden="true">{{ index + 1 }}</span>
+            <!-- Dots for existing events -->
+            <div v-if="hasExistingEvents(day)" class="flex justify-center">
+              <span class="block w-2 h-2 rounded-full bg-blue-500"></span>
+            </div>
+          </label>
         </div>
       </div>
-    </div>
+    </form>
 
     <div class="my-6 text-sm">
       <button
@@ -156,6 +167,10 @@ export default {
       ).length >= 1
         ? true
         : false;
+    },
+
+    screenReaderDatePresentation(date) {
+      return format(date, "EEEE, do MMMM yyyy");
     }
   },
 
@@ -174,5 +189,11 @@ export default {
 <style scoped>
 .calendar__days > * {
   width: 14.28%; /* Seven equal columns */
+}
+[type="checkbox"] {
+  outline: none;
+}
+.calendar__day:focus-within label {
+  outline: auto;
 }
 </style>
