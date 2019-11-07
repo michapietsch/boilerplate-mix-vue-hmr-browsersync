@@ -34,16 +34,23 @@
         <div class="h-full relative">
           <input
             type="checkbox"
-            :id="day"
+            :id="`day-${index}`"
+            class="ml-1"
             @click="toggle(day)"
+            @keyup.left="focusDateBefore(index)"
+            @keyup.right="focusDateAfter(index)"
+            @keyup.up="focusDateOneWeekBefore(index)"
+            @keyup.down="focusDateOneWeekAfter(index)"
             :aria-label="screenReaderDatePresentation(day)"
           />
           <label
-            :for="day"
+            :for="`day-${index}`"
             class="block absolute top-0 right-0 bottom-0 left-0 bg-gray-300 text-center h-full cursor-pointer"
-            :class="isSelected(day) ? 'bg-blue-500 text-white' : ''"
+            :class="isSelected(day) ? 'bg-blue-500' : ''"
           >
-            <span aria-hidden="true">{{ index + 1 }}</span>
+            <!-- Text color effects focus outline. That's why we need to add white color on the span element instead of the label. -->
+            <span aria-hidden="true" :class="isSelected(day) ? 'text-white' : ''">{{ index + 1 }}</span>
+
             <!-- Dots for existing events -->
             <div v-if="hasExistingEvents(day)" class="flex justify-center">
               <span class="block w-2 h-2 rounded-full bg-blue-500"></span>
@@ -59,6 +66,7 @@
         class="block text-white mx-auto py-1 px-2 rounded shadow-md"
         :class="count <= 0 ? 'bg-blue-400 cursor-not-allowed' : 'bg-blue-500'"
         :disabled="count <= 0"
+        :aria-disabled="count <= 0 ? true : false"
       >Save {{ count }} new events</button>
       <!-- <button type="button" v-if="count" class="ml-4 text-gray-600 underline">View list</button> -->
     </div>
@@ -171,6 +179,60 @@ export default {
 
     screenReaderDatePresentation(date) {
       return format(date, "EEEE, do MMMM yyyy");
+    },
+
+    focusDateBefore(index) {
+      if (index === 0) {
+        this.goToPreviousMonth();
+        this.$nextTick(() => {
+          document.getElementById(`day-${this.days.length - 1}`).focus();
+        });
+        return;
+      }
+
+      document.getElementById(`day-${index - 1}`).focus();
+    },
+
+    focusDateAfter(index) {
+      if (index === this.days.length - 1) {
+        this.goToNextMonth();
+        this.$nextTick(() => {
+          document.getElementById(`day-0`).focus();
+        });
+        return;
+      }
+
+      document.getElementById(`day-${index + 1}`).focus();
+    },
+
+    focusDateOneWeekBefore(index) {
+      if (index < 7) {
+        this.goToPreviousMonth();
+        this.$nextTick(() => {
+          let daysBeforeEndOfMonth = 7 - index;
+          document
+            .getElementById(`day-${this.days.length - daysBeforeEndOfMonth}`)
+            .focus();
+        });
+        return;
+      }
+
+      document.getElementById(`day-${index - 7}`).focus();
+    },
+
+    focusDateOneWeekAfter(index) {
+      let daysBeforeEndOfMonth = this.days.length - index;
+
+      if (daysBeforeEndOfMonth <= 7) {
+        this.goToNextMonth();
+        this.$nextTick(() => {
+          let daysIntoNewMonth = 7 - daysBeforeEndOfMonth;
+          document.getElementById(`day-${daysIntoNewMonth}`).focus();
+        });
+        return;
+      }
+
+      document.getElementById(`day-${index + 7}`).focus();
     }
   },
 
